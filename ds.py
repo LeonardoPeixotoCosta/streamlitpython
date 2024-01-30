@@ -26,14 +26,15 @@ if menu:
 # Tratando 'Data' para o tipo datetime
 df['Data'] = pd.to_datetime(df['Data'])
 
-# Criando novas colunas 'Ano' e 'Mes'
+# Criando novas colunas 'Ano' ,'Mes', 'Dia', 'Ano_Mes'
 df['Ano'] = df['Data'].dt.year
-df = df.sort_values('Ano', ascending=False)
 df['Mes'] = df['Data'].dt.month
-df = df.sort_values('Mes', ascending=False)
 df['Dia'] = df['Data'].dt.day
-df['Ano_Mes'] = df['Ano'].astype(str) + '-' + df['Mes'].astype(str)
-df = df.sort_values('Ano_Mes', ascending=False)
+df['Ano_Mes'] = pd.to_datetime(df[['Ano', 'Mes']].rename(columns={'Ano': 'year', 'Mes': 'month'}).assign(day=1))
+df['Ano_Mes'] = df['Ano_Mes'].dt.date
+
+# Ordenando dados 
+df = df.sort_values('Ano_Mes', ascending=True)
 
 # Tabela saldo no estoque 
 df_filtrado = df.loc[(df['Produto'] == menu) ]
@@ -90,10 +91,10 @@ if menu2:
     pivot_loja_graf.rename(columns={'Preço Unitário': 'Faturamento'}, inplace=True)
     pivot_loja_graf.rename(columns={'Movimentação_ABS': 'Quantidade'}, inplace=True)
     
-    # Resetando o índice do DataFrame para que 'Produto', 'Nome Loja' e 'Estado' sejam colunas normais
+    # Resetando o índice do DataFrame
     pivot_loja_reset = pivot_loja_graf.reset_index()
 
-    # Definindo 'Nome Loja' como o índice do DataFrame
+    # Definindo o índice do DataFrame
     pivot_loja_reset = pivot_loja_reset.set_index('Nome Loja')
 
     # Gráfico de barras

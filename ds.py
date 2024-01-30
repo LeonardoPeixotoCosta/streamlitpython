@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 
 # Importando a base de dados
 df = pd.read_csv('Base_Mercadinho.csv', encoding='latin1', delimiter=';')

@@ -12,7 +12,7 @@ df['Lucro'] = round( df['Preço Unitário'] - df['Custo Unitário'],2)
 coluna_sem_duplicatas = df['Produto'].drop_duplicates()
 Categoria_sem_duplicatas = df['Categoria'].drop_duplicates()
 
-# Adicionando um valor padrão vazio ao início da lista de opções
+# Valor vazio ao início da selectbox
 opcoes = [''] + list(coluna_sem_duplicatas)
 
 # Selectbox na barra lateral
@@ -23,7 +23,7 @@ st.markdown("<h1 style='color: gray;'>Desempenho do Produto</h1>", unsafe_allow_
 if menu:
     st.markdown(f"<h1 style='color: gray;'>{menu}</h1>", unsafe_allow_html=True)
 
-# Tratando 'Data' para o tipo datetime
+# Tratando 'Data'
 df['Data'] = pd.to_datetime(df['Data'])
 
 # Criando novas colunas 'Ano' ,'Mes', 'Dia', 'Ano_Mes'
@@ -51,7 +51,7 @@ if menu:
 menu2=st.sidebar.multiselect(':date: Selecione um Ano:', df_filtrado['Ano'].unique())
 
 if menu2:
-    # Tabela Receita Sidebar
+    # Tabela Faturamento
     df_filtrado = df.loc[(df['Produto'] == menu) & (df['Tipo'] == 'S') & df['Ano'].isin(menu2)]
     pivot_Faturamento = round(df_filtrado.pivot_table(index=['Produto'],values=['Preço Unitário'], aggfunc='sum'),2)
 
@@ -63,7 +63,7 @@ if menu2:
     
 
 if menu2:
-    # Tabela Lucro Sidebar
+    # Tabela Lucro
     df_filtrado = df.loc[(df['Produto'] == menu) & (df['Tipo'] == 'S') & df['Ano'].isin(menu2)]
     pivot_Lucro = round(df_filtrado.pivot_table(index=['Produto'], values=['Lucro'], aggfunc='sum'),2)
 
@@ -71,7 +71,7 @@ if menu2:
     st.subheader (f"Lucro: R$ {lucro:,.2f}", divider="gray")
 
 if menu2:
-    # Tabela dinâmica Vendas por Loja
+    # Tabela Vendas por Loja
     df_filtrado = df.loc[(df['Produto'] == menu) & (df['Tipo'] == 'S') & df['Ano'].isin(menu2)]
     pivot_loja = df_filtrado.pivot_table(index=['Produto', 'Nome Loja', 'Estado'], values=['Movimentação_ABS', 'Preço Unitário', 'Lucro'], aggfunc='sum')
 
@@ -83,7 +83,7 @@ if menu2:
 
 
 if menu2:
-    # Tabela dinâmica Vendas por Loja
+    # Tabela Vendas por Loja para gráfico
     df_filtrado = df.loc[(df['Produto'] == menu) & (df['Tipo'] == 'S') & df['Ano'].isin(menu2)]
     pivot_loja_graf = df_filtrado.pivot_table(index=['Nome Loja'], values=['Movimentação_ABS', 'Preço Unitário', 'Lucro'], aggfunc='sum')
 
@@ -102,7 +102,7 @@ if menu2:
     st.bar_chart(pivot_loja_reset, use_container_width=True)   
 
 if menu2:
-    # Tabela dinâmica Faturamento por Ano e mês
+    # Tabela Faturamento por Ano e mês para gráfico
     df_filtrado_ano = df_filtrado.loc[df_filtrado['Ano'].isin(menu2)]
     pivot_data_graf = df_filtrado_ano.pivot_table(index=['Ano_Mes'], values=['Movimentação_ABS', 'Preço Unitário', 'Lucro'], aggfunc='sum')
 
@@ -119,6 +119,7 @@ if menu2:
     # Gráfico Linha
     st.subheader('Qtd de vendas x Lucro x Faturamento por ano e mês')
     st.line_chart(pivot_data_reset, use_container_width=True)  
+    
 if menu2:
     # Tabela dinâmica Faturamento por Ano e mês
     df_filtrado_ano = df_filtrado.loc[df_filtrado['Ano'].isin(menu2)]
